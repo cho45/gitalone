@@ -1,5 +1,7 @@
 #!rackup
 
 require "gitalone"
-run Gigit
+
+use Rack::Static, :urls => ["/css", "/img", "/js"], :root => "root"
+run GitAlone
 

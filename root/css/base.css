@@ -3,6 +3,37 @@
 html,
 body {
 	margin: 0;
-	padding 0;
+	padding: 0;
+	background: #fff;
+	color: #222;
+	line-height: 1.33;
 }
 
+
+a:link {
+	color: #4183c4;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #7783c4;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #d00;
+	text-decoration: underline;
+}
+
+
+
+h1 {
+	font-size: 100%;
+	text-indent: -10000px;
+	height: 49px;
+	background: #fff url("/img/logo.png") no-repeat 1em 0.5em;
+	padding: 1em 0;
+	border-style: solid;
+	border-color: #ccc;
+	border-width: 0 0 1px 0;
+}

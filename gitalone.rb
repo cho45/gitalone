@@ -24,6 +24,7 @@ class GitAlone < Controller
 	bind "" do
 		stash["repos"] = []
 
+		GC.start
 		Pathname.glob("#{@opts.dir}/*/.git/").each do |g|
 			repo = Grit::Repo.new(g)
 			next unless repo.heads.first
@@ -32,6 +33,7 @@ class GitAlone < Controller
 				:repo => repo
 			}
 		end
+		GC.start
 
 		stash["repos"] = stash["repos"].sort_by {|i|
 			info = i[:repo].heads.first.commit.to_hash
@@ -60,5 +62,5 @@ class GitAlone < Controller
 	end
 end
 
-Rack::Handler::WEBrick.run GitAlone, :Port => 3000
+# Rack::Handler::WEBrick.run GitAlone, :Port => 3000
 
