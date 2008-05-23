@@ -1,19 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
-	<head profile="http://www.w3.org/2003/g/data-view">
-		<link rel="stylesheet" type="text/css" href="/css/base.css" media="screen,tv,projection"/>
-		<!--link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/-->
-
-		<script type="text/javascript" src="/js/site-script.js"></script>
-
-		<title>GitAlone</title>
-	</head>
-	<body>
-		<h1>GitAlone</h1>
-		<ol>
-		<% stash["repos"].each do |repo| %>
-		<li><a href="/repo/<%= repo[:path].basename %>"><%= repo[:path].basename %></a></li>
-		<% end %>
-		</ol>
-	</body>
-</html>
+<% title = "GitAlone" %>
+<% layout  %>
+<ol>
+<% stash["repos"].each do |repo| %>
+	<li><a href="/repo/<%= repo[:path].basename %>"><%= repo[:path].basename %></a></li>
+<% end %>
+</ol>

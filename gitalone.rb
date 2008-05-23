@@ -18,8 +18,8 @@ class GitAlone < Controller
 		@opts.dir = Pathname.new(@opts.dir).expand_path
 	end
 
-	view :html => View::ErubisEruby.new,
-	     :json => View::JSON.new
+	view :html => View::ErubisEruby
+	view :json => View::JSON
 
 	bind "" do
 		stash["repos"] = []

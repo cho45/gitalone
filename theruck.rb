@@ -13,14 +13,12 @@ module TheRuck
 				self.instance_variable_get(:@handlers)
 			end
 
-			def view(hash)
-				hash.each do |name, instance|
+			def view(hash, opts={})
+				hash.each do |name, klass|
 					define_method(name) do |path|
-						instance.header = {}
-						instance.body = ""
-						instance.render(path, stash)
-						head instance.header
-						body instance.body
+						i = klass.new(opts).render(path, stash)
+						head i.header
+						body i.body
 					end
 				end
 			end
@@ -126,6 +124,11 @@ module TheRuck
 	class View
 		attr_accessor :header, :body
 
+		def initialize(opts={})
+			@header = {}
+			@body   = ""
+		end
+
 		def head(name, value=nil)
 			@header[name] = value.to_s
 		end
@@ -134,41 +137,37 @@ module TheRuck
 			@body << str
 		end
 
-		class ERB < View
-			def initialize(opts={})
-				require "erb"
-				@opts = {
-					:dir => "templates"
-				}.update(opts)
-				@templates = {}
-			end
-
-			def render(path, stash)
-				@templates[path] = ::ERB.new(File.read("#{@opts[:dir]}/#{path}.html"))
-				head "Content-Type", "text/html"
-				body @templates[path].result(binding)
-			end
-		end
-
 		class ErubisEruby < View
+			@@templates = {}
+
 			def initialize(opts={})
 				require "erubis"
+				super
 				@opts = {
 					:dir => "templates"
 				}.update(opts)
-				@templates = {}
+				@layout = []
 			end
 
 			def render(path, stash)
-				@templates[path] ||= ::Erubis::EscapedEruby.new(File.read("#{@opts[:dir]}/#{path}.html"))
+				@@templates[path] ||= ::Erubis::EscapedEruby.new(File.read("#{@opts[:dir]}/#{path}.html"))
 				head "Content-Type", "text/html"
-				body @templates[path].result(binding)
+				body @layout.inject(@@templates[path].result(binding)) {|content,layout|
+					@@templates[layout].result(binding)
+				}
+				self
+			end
+
+			def layout(path=:layout)
+				@@templates[path] ||= ::Erubis::EscapedEruby.new(File.read("#{@opts[:dir]}/#{path}.html"))
+				@layout << path
 			end
 		end
 
 		class JSON < View
-			def initialize
+			def initialize(opts={})
 				require "json"
+				super
 			end
 
 			def render(path, stash)
