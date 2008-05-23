@@ -57,7 +57,14 @@ class GitAlone < Controller
 	end
 
 	bind "repo/:name/commit/:hash" do
-		body "Hash"
+		body params.inspect
+	end
+
+	bind "repo/:name/commits/:head" do
+		body params.inspect
+	end
+
+	bind "repo/:name/tree/:name" do
 		body params.inspect
 	end
 end
