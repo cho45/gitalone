@@ -1,7 +1,7 @@
 <% title = "GitAlone" %>
-<% layout  %>
+<% layout %>
 <ol>
-<% stash["repos"].each do |repo| %>
+<% repos.each do |repo| %>
 	<li><a href="/repo/<%= repo[:path].basename %>"><%= repo[:path].basename %></a></li>
 <% end %>
 </ol>

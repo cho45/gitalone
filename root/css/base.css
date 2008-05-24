@@ -27,13 +27,72 @@ a:hover {
 
 
 
-h1 {
+#top {
 	font-size: 100%;
-	text-indent: -10000px;
 	height: 49px;
 	background: #fff url("/img/logo.png") no-repeat 1em 0.5em;
 	padding: 1em 0;
 	border-style: solid;
 	border-color: #ccc;
 	border-width: 0 0 1px 0;
+}
+
+#top a {
+	display: block;
+	height: 100%;
+	width: 100%;
+	text-indent: -10000px;
+}
+
+#content {
+	padding: 1em;
+}
+
+.repos-info {
+	line-height: 1.66em;
+	padding: 1em;
+	background: #efefef;
+	border: 1px solid #ccc;
+}
+
+.repos-info dt {
+	width: 5em;
+	color: #666;
+}
+
+.repos-info dd {
+	margin: -1.66em 0 0 5em;
+}
+
+.commit {
+	background: #f6f6f6;
+	padding: 1em;
+	margin: 1em 0;
+	clear: both;
+}
+
+.commit .commit-info {
+	float: right;
+	line-height: 1.55em;
+	padding: 0 1em;
+	margin: 0 0 1em 1em;
+	background: #fff;
+	border: 1px solid #ccc;
+}
+
+.commit .commit-info dt {
+	width: 5em;
+	color: #666;
+}
+
+.commit .commit-info dd {
+	margin: -1.55em 0 0 5em;
+}
+
+.commit hr {
+	clear: both;
+	visibility: hidden;
+	height: 0px;
+	margin: 0;
+	padding: 0;
 }

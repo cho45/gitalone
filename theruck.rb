@@ -13,13 +13,11 @@ module TheRuck
 				self.instance_variable_get(:@handlers)
 			end
 
-			def view(hash, opts={})
-				hash.each do |name, klass|
-					define_method(name) do |path|
-						i = klass.new(opts).render(path, stash)
-						head i.header
-						body i.body
-					end
+			def view(name, klass, opts={})
+				define_method(name) do |path|
+					i = klass.new(opts).render(path, stash)
+					head i.header
+					body i.body
 				end
 			end
 
@@ -147,11 +145,14 @@ module TheRuck
 					:dir => "templates"
 				}.update(opts)
 				@layout = []
+				extend @opts[:helper] if @opts[:helper]
 			end
 
 			def render(path, stash)
 				@@templates[path] ||= ::Erubis::EscapedEruby.new(File.read("#{@opts[:dir]}/#{path}.html"))
 				head "Content-Type", "text/html"
+				b = binding
+				stash.each {|k,v| eval "#{k} = stash[:#{k}]", b }
 				body @layout.inject(@@templates[path].result(binding)) {|content,layout|
 					@@templates[layout].result(binding)
 				}

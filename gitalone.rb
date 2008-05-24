@@ -18,24 +18,31 @@ class GitAlone < Controller
 		@opts.dir = Pathname.new(@opts.dir).expand_path
 	end
 
-	view :html => View::ErubisEruby
-	view :json => View::JSON
+	module Helper
+		def gravatar(email, size=30)
+			"http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size.to_i}"
+		end
+	end
+
+	require "digest/md5"
+	view :html, View::ErubisEruby, :helper => Helper
+	view :json, View::JSON
 
 	bind "" do
-		stash["repos"] = []
+		stash[:repos] = []
 
 		GC.start
 		Pathname.glob("#{@opts.dir}/*/.git/").each do |g|
 			repo = Grit::Repo.new(g)
 			next unless repo.heads.first
-			stash["repos"] << {
+			stash[:repos] << {
 				:path => g.parent,
 				:repo => repo
 			}
 		end
 		GC.start
 
-		stash["repos"] = stash["repos"].sort_by {|i|
+		stash[:repos] = stash[:repos].sort_by {|i|
 			info = i[:repo].heads.first.commit.to_hash
 			info["committed_date"]
 		}.reverse
@@ -45,15 +52,11 @@ class GitAlone < Controller
 
 	bind "repo/:name" do
 		raise "Invalid /" if params["name"].include?("/")
-		repo = Grit::Repo.new(@opts.dir + params["name"] + ".git")
-		stash["repo"] = repo
 
+		head 302
+		head "Location", "/repo/#{params["name"]}/tree/master"
 		head "Content-Type", "text/plain"
-		body params.inspect
-		body repo.inspect
-		body repo.tags.inspect
-		body repo.heads.inspect
-		body repo.description
+		body "Redirect"
 	end
 
 	bind "repo/:name/commit/:hash" do
@@ -64,8 +67,12 @@ class GitAlone < Controller
 		body params.inspect
 	end
 
-	bind "repo/:name/tree/:name" do
-		body params.inspect
+	bind "repo/:name/tree/:head" do
+		repo = Grit::Repo.new(@opts.dir + params["name"] + ".git")
+		stash[:name] = params["name"]
+		stash[:head] = params["head"]
+		stash[:repo] = repo
+		html :tree
 	end
 end
 
