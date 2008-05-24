@@ -1,0 +1,39 @@
+<% title = "#{name} / #{head} - GitAlone" %>
+<% layout %>
+
+<dl class="repos-info">
+	<dt>Path</dt>
+	<dd><%= repo.path %></dd>
+	<dt>Heads</dt>
+	<dd><%= repo.heads.map {|h| h.name } %></dd>
+	<dt>Tags</dt>
+	<dd><%= repo.tags.empty?? "not tagged now" : repo.tags.map {|h| h.name } %></dd>
+</dl>
+
+<% repo.commits.each do |commit| info = commit.to_hash %>
+<div class="commit">
+	<div class="commit-info">
+		<dl>
+			<dt>commit</dt>
+			<dd><code><a href="/repo/<%= name %>/commit/<%= info["id"] %>"><%= info["id"] %></a></code></dd>
+			<% info["parents"].each do |i| %>
+			<dt>parent</dt>
+			<dd>
+				<code><a href="/repo/<%= name %>/commit/<%= i["id"] %>"><%= i["id"] %></a></code>
+			</dd>
+			<% end %>
+			<dt>tree</dt>
+			<dd><code><a href="/repo/<%= name %>/tree/<%= info["tree"] %>"><%= info["tree"] %></a></code></dd>
+		</dl>
+	</div>
+	<pre><%= info["message"] %></pre>
+	<div class="author">
+		<img src="<%= gravatar info["author"]["email"], 50 %>" alt=""/>
+		<%= info["author"]["name"] %>
+	</div>
+	<hr />
+	<!--
+		<%= info.inspect %>
+		-->
+</div>
+<% end %>
