@@ -1,7 +1,30 @@
 <% title = "GitAlone" %>
 <% layout %>
-<ol>
-<% repos.each do |repo| %>
-	<li><a href="/repo/<%= repo[:path].basename %>"><%= repo[:path].basename %></a></li>
-<% end %>
-</ol>
+
+<div class="section">
+	<h2>Repositories</h2>
+
+	<% repos.each do |repo| %>
+	<div class="repository">
+		<h3><a href="/repo/<%= repo[:path].basename %>"><%= repo[:path].basename %></a></h3>
+		<dl>
+			<dt>heads</dt>
+			<dd>
+				<ul>
+					<% repo[:repo].heads.each do |head| %>
+					<li>
+						<a href="/repo/<%= repo[:path].basename %>/tree/<%= head.name %>"><%= head.name %></a>
+						<% repo[:repo].remotes.each do |r| h = r.head(head.name) %>
+							<% if h && h.commit.id != head.commit.id %>
+							<span class="unpushed">(unpushed to <%= r.name %>)</span>
+							<% end %>
+						<% end %>
+					</li>
+					<% end %>
+				</ul>
+			</dd>
+		</dl>
+	</div>
+	<% end %>
+
+</div>
