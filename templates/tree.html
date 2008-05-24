@@ -5,12 +5,16 @@
 	<dt>Path</dt>
 	<dd><%= repo.path %></dd>
 	<dt>Heads</dt>
-	<dd><%= repo.heads.map {|h| h.name } %></dd>
+	<dd>
+		<% repo.heads.each do |h|  %>
+		<a href="/repo/<%= name %>/tree/<%= h.name %>"><%= h.name %></a>
+		<% end %>
+	</dd>
 	<dt>Tags</dt>
 	<dd><%= repo.tags.empty?? "not tagged now" : repo.tags.map {|h| h.name } %></dd>
 </dl>
 
-<% repo.commits.each do |commit| info = commit.to_hash %>
+<% repo.commits(head).each do |commit| info = commit.to_hash %>
 <div class="commit">
 	<div class="commit-info">
 		<dl>
