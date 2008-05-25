@@ -104,8 +104,10 @@ class GitAlone < Controller
 		body params.inspect
 	end
 
-	bind "repo/:name/tree/:head" do
+	bind "repo/:name/tree/:head/*path" do
 		repo = Grit::Repo.new(@opts.dir + params["name"] + ".git")
+		p params
+		stash[:path] = params["path"]
 		stash[:name] = params["name"]
 		stash[:head] = params["head"]
 		stash[:repo] = repo

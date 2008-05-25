@@ -50,9 +50,13 @@ module TheRuck
 				names = []
 				paths = str.to_s.split("/", -1)
 				regex = paths.empty?? %r|^/$| : Regexp.new(paths.inject("^") {|r,i|
-					if i[0] == ?:
+					case i[0]
+					when ?:
 						names << i.sub(":", "")
 						r << "/([^/]+)"
+					when ?*
+						names << i.sub("*", "")
+						r << "(?:/(.*))?"
 					else
 						r << "/#{i}"
 					end
@@ -148,12 +152,12 @@ module TheRuck
 				extend @opts[:helper] if @opts[:helper]
 			end
 
-			def render(path, stash)
-				@@templates[path] ||= ::Erubis::EscapedEruby.new(File.read("#{@opts[:dir]}/#{path}.html"))
+			def render(_path, _stash)
+				@@templates[_path] ||= ::Erubis::EscapedEruby.new(File.read("#{@opts[:dir]}/#{_path}.html"))
 				head "Content-Type", "text/html"
-				b = binding
-				stash.each {|k,v| eval "#{k} = stash[:#{k}]", b }
-				body @layout.inject(@@templates[path].result(binding)) {|content,layout|
+				_binding = binding
+				_stash.each {|k,v| eval "#{k} = _stash[:#{k}]", _binding }
+				body @layout.inject(@@templates[_path].result(binding)) {|content,layout|
 					@@templates[layout].result(binding)
 				}
 				self

@@ -1,4 +1,4 @@
-<% title = "#{name} / #{head} - GitAlone" %>
+<% title = "#{name} - #{path} / #{head} - GitAlone" %>
 <% layout %>
 
 <dl class="repos-info">
@@ -14,7 +14,7 @@
 	<dd><%= repo.tags.empty?? "not tagged now" : repo.tags.map {|h| h.name } %></dd>
 </dl>
 
-<% repo.commits(head).each do |commit| info = commit.to_hash %>
+<% repo.commits(head, 5).each do |commit| info = commit.to_hash %>
 <div class="commit">
 	<div class="commit-info">
 		<dl>
@@ -41,3 +41,23 @@
 		-->
 </div>
 <% end %>
+
+
+<table>
+	<thead>
+		<tr>
+			<th>name</th>
+			<th>age</th>
+			<th>message</th>
+			<th>author</th>
+		</tr>
+	</thead>
+	<tbody>
+	<% repo.tree(head).contents.each do |blob| %>
+		<tr>
+			<td><a href="/repo/<%= name %>/tree/<%= head %>/<%= blob.name %>"><%= blob.name %></a></td>
+		</tr>
+	<% end %>
+	</tbody>
+</table>
+
